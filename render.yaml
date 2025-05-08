@@ -1,12 +1,12 @@
 databases:
-  - name: postgres
+  - name: emmanuel
     ipAllowList: []
-    plan: paid
+    plan: free
     
 services: 
   - type: web
     name: rails
-    plan: paid
+    plan: free
     env: ruby
     buildCommand: "./bin/render-build.sh" 
     startCommand: bundle exec rails s
@@ -21,5 +21,5 @@ services:
   - type: redis
     name: redis
     ipAllowList: []
-    plan: paid
+    plan: free
     maxmemoryPolicy: noeviction
