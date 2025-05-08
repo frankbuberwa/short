@@ -1,0 +1,62 @@
+<div class="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto">
+  <div class="flex flex-col md:flex-row gap-8">
+    <div class="md:w-1/3">
+      <div class="bg-blue-100 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-user-md text-blue-600 text-5xl"></i>
+      </div>
+      
+      <h1 class="text-2xl font-bold text-center text-blue-800">Dr. <%= @doctor.user.full_name %></h1>
+      <p class="text-center text-blue-600 mb-6"><%= @doctor.specialty %></p>
+      
+      <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-blue-800 mb-2">Professional Information</h2>
+        <p class="mb-2"><span class="font-medium">License:</span> <%= @doctor.license_number %></p>
+        <p><span class="font-medium">Experience:</span> <%= @doctor.years_of_experience %> years</p>
+      </div>
+      
+      <% if @doctor.user.address.present? %>
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h2 class="text-lg font-semibold text-blue-800 mb-2">Location</h2>
+          <p class="mb-2"><i class="fas fa-map-marker-alt text-blue-600 mr-2"></i> <%= @doctor.user.address %></p>
+          <% if @doctor.latitude.present? %>
+            <%= link_to "Get Directions", "https://www.google.com/maps/dir/?api=1&destination=#{@doctor.latitude},#{@doctor.longitude}", target: "_blank", class: "text-blue-600 hover:underline text-sm" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="md:w-2/3">
+      <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-blue-800 mb-4">Available at these hospitals</h2>
+        
+        <% if @doctor.hospitals.any? %>
+          <div class="space-y-4">
+            <% @doctor.hospitals.each do |hospital| %>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="font-medium text-blue-800"><%= hospital.name %></h3>
+                <p class="text-sm text-gray-600 mb-2"><%= hospital.address %></p>
+                <%= link_to "Book Appointment", new_appointment_path(doctor_id: @doctor.id, hospital_id: hospital.id), class: "bg-blue-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-blue-700 transition duration-300 inline-block" %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-600">This doctor hasn't been assigned to any hospitals yet.</p>
+        <% end %>
+      </div>
+      
+      <% if @doctor.availabilities.upcoming.any? %>
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h2 class="text-lg font-semibold text-blue-800 mb-4">Upcoming Availability</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <% @doctor.availabilities.upcoming.each do |availability| %>
+              <div class="bg-white p-3 rounded-lg shadow-sm">
+                <p class="font-medium"><%= availability.start_time.strftime("%A, %b %d") %></p>
+                <p class="text-sm text-gray-600"><%= availability.start_time.strftime("%I:%M %p") %> - <%= availability.end_time.strftime("%I:%M %p") %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
