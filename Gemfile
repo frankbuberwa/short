@@ -30,6 +30,19 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+gem 'devise'
+
+# Maps
+gem 'geocoder'
+gem 'leaflet-rails'
+
+# UI Components
+gem 'font-awesome-rails'
+gem 'kaminari' # for pagination
+
+# Other utilities
+gem 'faker' # for seed data
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
