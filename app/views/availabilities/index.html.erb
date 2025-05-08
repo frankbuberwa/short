@@ -1,0 +1,94 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-800">Your Availability</h1>
+    <%= link_to new_availability_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center" do %>
+      <i class="fas fa-plus mr-2"></i> Add Availability
+    <% end %>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold text-blue-800 mb-4">Upcoming Availability</h2>
+    <% if @upcoming_availabilities.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-blue-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Time</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Duration</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @upcoming_availabilities.each do |availability| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= availability.start_time.strftime("%B %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= availability.start_time.strftime("%I:%M %p") %> - <%= availability.end_time.strftime("%I:%M %p") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= distance_of_time_in_words(availability.start_time, availability.end_time) %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <%= link_to 'Edit', edit_availability_path(availability), class: 'text-blue-600 hover:text-blue-900 mr-3' %>
+                  <%= link_to 'Delete', availability, method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-600 hover:text-red-900' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <i class="fas fa-info-circle text-blue-400"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-blue-700">
+              You don't have any upcoming availability slots. 
+              <%= link_to 'Add availability', new_availability_path, class: 'font-medium underline text-blue-700 hover:text-blue-600' %>
+              to allow patients to book appointments.
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @past_availabilities.any? %>
+    <div>
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">Past Availability</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-blue-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Time</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @past_availabilities.each do |availability| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= availability.start_time.strftime("%B %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= availability.start_time.strftime("%I:%M %p") %> - <%= availability.end_time.strftime("%I:%M %p") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                    Expired
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

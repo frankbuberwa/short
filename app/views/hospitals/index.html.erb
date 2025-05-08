@@ -1,0 +1,85 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-800">Find Hospitals Near You</h1>
+    
+    <div class="flex space-x-4">
+      <button id="location-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+        <i class="fas fa-location-arrow mr-2"></i>Use My Location
+      </button>
+      
+      <%= form_with url: hospitals_path, method: :get, class: "flex" do |f| %>
+        <%= f.text_field :search, placeholder: "Search by name...", class: "border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        <%= f.submit "Search", class: "bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition duration-300" %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div id="map" class="h-64 mb-6 rounded-lg"></div>
+  
+  <div class="grid md:grid-cols-2 gap-6">
+    <% @hospitals.each do |hospital| %>
+      <div class="bg-blue-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+        <div class="bg-blue-600 text-white p-4">
+          <h2 class="text-xl font-bold"><%= hospital.name %></h2>
+          <p class="text-blue-100"><i class="fas fa-phone-alt mr-1"></i> <%= hospital.phone %></p>
+        </div>
+        
+        <div class="p-4">
+          <p class="text-gray-700 mb-2"><i class="fas fa-map-marker-alt text-blue-600 mr-2"></i> <%= hospital.address %></p>
+          
+          <% if hospital.website.present? %>
+            <p class="text-gray-700 mb-4">
+              <i class="fas fa-globe text-blue-600 mr-2"></i> 
+              <%= link_to hospital.website, hospital.website, target: "_blank", class: "text-blue-600 hover:underline" %>
+            </p>
+          <% end %>
+          
+          <div class="flex justify-between items-center">
+            <%= link_to "View Details", hospital_path(hospital), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+            <%= link_to "Find Doctors", doctors_path(hospital_id: hospital.id), class: "bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="mt-6">
+    <%= paginate @hospitals %>
+  </div>
+</div>
+
+<script>
+  document.getElementById('location-btn').addEventListener('click', function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        // Redirect with location parameters
+        window.location.href = `<%= hospitals_path %>?latitude=${latitude}&longitude=${longitude}`;
+      }, function(error) {
+        alert('Unable to retrieve your location. Please enable location services.');
+      });
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  });
+  
+  // Initialize map if we have hospital locations
+  <% if @hospitals.any? && @hospitals.first.latitude.present? %>
+    document.addEventListener('DOMContentLoaded', function() {
+      const map = L.map('map').setView([<%= @hospitals.first.latitude %>, <%= @hospitals.first.longitude %>], 12);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      <% @hospitals.each do |hospital| %>
+        <% if hospital.latitude.present? && hospital.longitude.present? %>
+          L.marker([<%= hospital.latitude %>, <%= hospital.longitude %>]).addTo(map)
+            .bindPopup('<b><%= hospital.name %></b><br><%= hospital.address %>');
+        <% end %>
+      <% end %>
+    });
+  <% end %>
+</script>

@@ -1,0 +1,27 @@
+<div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold text-blue-800 mb-6">New Appointment with Dr. <%= @doctor.user.full_name %></h1>
+  
+  <%= form_with model: @appointment, url: appointments_path, local: true do |f| %>
+    <%= f.hidden_field :doctor_id, value: @doctor.id %>
+    
+    <div class="mb-4">
+      <%= f.label :hospital_id, "Hospital", class: "block text-gray-700 font-medium mb-2" %>
+      <%= f.collection_select :hospital_id, Hospital.all, :id, :name, { prompt: "Select a hospital" }, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :appointment_date, "Date and Time", class: "block text-gray-700 font-medium mb-2" %>
+      <%= f.datetime_local_field :appointment_date, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+    
+    <div class="mb-6">
+      <%= f.label :notes, "Notes (optional)", class: "block text-gray-700 font-medium mb-2" %>
+      <%= f.text_area :notes, rows: 3, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+    
+    <div class="flex justify-end space-x-4">
+      <%= link_to "Cancel", doctors_path, class: "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-300" %>
+      <%= f.submit "Book Appointment", class: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300" %>
+    </div>
+  <% end %>
+</div>

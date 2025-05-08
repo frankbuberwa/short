@@ -1,0 +1,113 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <h1 class="text-2xl font-bold text-blue-800 mb-6">Dashboard</h1>
+  
+  <% if current_user.admin? %>
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Total Users</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @users %></p>
+      </div>
+      
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Total Doctors</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @doctors %></p>
+      </div>
+      
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Total Hospitals</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @hospitals %></p>
+      </div>
+      
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Total Appointments</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @appointments %></p>
+      </div>
+    </div>
+    
+  <% elsif current_user.doctor? %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">Upcoming Appointments</h2>
+      <% if @upcoming_appointments.present? %>
+        <div class="bg-blue-50 rounded-lg p-4">
+          <% @upcoming_appointments.each do |appointment| %>
+            <div class="mb-4 pb-4 border-b border-blue-200 last:border-0 last:mb-0 last:pb-0">
+              <p class="font-medium"><%= appointment.patient.full_name %></p>
+              <p class="text-sm text-gray-600"><%= appointment.appointment_date.strftime("%B %d, %Y at %I:%M %p") %></p>
+              <p class="text-sm">Status: <span class="font-medium <%= appointment.status == 'confirmed' ? 'text-green-600' : 'text-yellow-600' %>"><%= appointment.status.capitalize %></span></p>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">No upcoming appointments.</p>
+      <% end %>
+    </div>
+    
+    <div>
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">Your Availabilities</h2>
+      <% if @availabilities.present? %>
+        <div class="bg-blue-50 rounded-lg p-4">
+          <% @availabilities.each do |availability| %>
+            <div class="mb-4 pb-4 border-b border-blue-200 last:border-0 last:mb-0 last:pb-0">
+              <p class="font-medium"><%= availability.start_time.strftime("%B %d, %Y") %></p>
+              <p class="text-sm text-gray-600"><%= availability.start_time.strftime("%I:%M %p") %> to <%= availability.end_time.strftime("%I:%M %p") %></p>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">No upcoming availabilities. <%= link_to "Add availability", new_availability_path, class: "text-blue-600 hover:underline" %></p>
+      <% end %>
+    </div>
+    
+  <% elsif current_user.patient? %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">Your Upcoming Appointments</h2>
+      <% if @upcoming_appointments.any? %>
+        <div class="bg-blue-50 rounded-lg p-4">
+          <% @upcoming_appointments.each do |appointment| %>
+            <div class="mb-4 pb-4 border-b border-blue-200 last:border-0 last:mb-0 last:pb-0">
+              <p class="font-medium">Dr. <%= appointment.doctor.user.full_name %></p>
+              <p class="text-sm text-gray-600"><%= appointment.appointment_date.strftime("%B %d, %Y at %I:%M %p") %></p>
+              <p class="text-sm">Status: <span class="font-medium <%= appointment.status == 'confirmed' ? 'text-green-600' : 'text-yellow-600' %>"><%= appointment.status.capitalize %></span></p>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">No upcoming appointments. <%= link_to "Find a doctor", doctors_path, class: "text-blue-600 hover:underline" %></p>
+      <% end %>
+    </div>
+    
+    <% if @nearby_doctors&.any? %>
+      <div>
+        <h2 class="text-xl font-semibold text-blue-800 mb-4">Doctors Near You</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <% @nearby_doctors.each do |doctor| %>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="font-medium"><%= doctor.user.full_name %></p>
+              <p class="text-sm text-gray-600"><%= doctor.specialty %></p>
+              <p class="text-sm"><i class="fas fa-map-marker-alt text-blue-600 mr-1"></i> <%= number_with_precision(doctor.distance, precision: 1) %> miles away</p>
+              <%= link_to "Book Appointment", new_appointment_path(doctor_id: doctor.id), class: "inline-block mt-2 text-blue-600 hover:underline text-sm" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    
+  <% elsif current_user.hospital_admin? %>
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold text-blue-800">Hospital Overview</h2>
+      <p class="text-gray-600"><%= @hospital.name %></p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Doctors</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @doctors %></p>
+      </div>
+      
+      <div class="bg-blue-100 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-blue-800">Upcoming Appointments</h3>
+        <p class="text-3xl font-bold text-blue-600"><%= @appointments %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

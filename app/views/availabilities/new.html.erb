@@ -1,0 +1,36 @@
+<div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold text-blue-800 mb-6">Add New Availability</h1>
+  
+  <%= form_with model: @availability, url: availabilities_path, local: true do |f| %>
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <%= f.label :start_time, "Start Time", class: "block text-gray-700 font-medium mb-2" %>
+        <%= f.datetime_local_field :start_time, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+      
+      <div>
+        <%= f.label :end_time, "End Time", class: "block text-gray-700 font-medium mb-2" %>
+        <%= f.datetime_local_field :end_time, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+    </div>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-info-circle text-blue-400"></i>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-blue-700">
+            Patients will be able to book appointments during these time slots.
+            Make sure to leave enough time between slots for each appointment.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex justify-end space-x-4">
+      <%= link_to "Cancel", availabilities_path, class: "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-300" %>
+      <%= f.submit "Save Availability", class: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300" %>
+    </div>
+  <% end %>
+</div>

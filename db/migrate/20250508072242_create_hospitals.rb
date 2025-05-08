@@ -6,6 +6,8 @@ class CreateHospitals < ActiveRecord::Migration[8.0]
       t.text :address
       t.string :phone
       t.string :website
+      t.float :latitude
+      t.float :longitude
 
       t.timestamps
     end

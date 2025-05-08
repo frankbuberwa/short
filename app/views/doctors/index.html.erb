@@ -1,0 +1,77 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-800">Find Doctors Near You</h1>
+    
+    <div class="flex space-x-4">
+      <button id="location-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+        <i class="fas fa-location-arrow mr-2"></i>Use My Location
+      </button>
+      
+      <%= form_with url: doctors_path, method: :get, class: "flex" do |f| %>
+        <%= f.text_field :search, placeholder: "Search by specialty...", class: "border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        <%= f.submit "Search", class: "bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition duration-300" %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div id="map" class="h-64 mb-6 rounded-lg"></div>
+  
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @doctors.each do |doctor| %>
+      <div class="bg-blue-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+        <div class="bg-blue-600 text-white p-4">
+          <h2 class="text-xl font-bold"><%= doctor.user.full_name %></h2>
+          <p class="text-blue-100"><%= doctor.specialty %></p>
+        </div>
+        
+        <div class="p-4">
+          <p class="text-gray-700 mb-2"><i class="fas fa-graduation-cap text-blue-600 mr-2"></i> <%= doctor.years_of_experience %> years experience</p>
+          <p class="text-gray-700 mb-4"><i class="fas fa-id-card text-blue-600 mr-2"></i> License: <%= doctor.license_number %></p>
+          
+          <div class="flex justify-between items-center">
+            <%= link_to "View Profile", doctor_path(doctor), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+            <%= link_to "Book Appointment", new_appointment_path(doctor_id: doctor.id), class: "bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="mt-6">
+    <%= paginate @doctors %>
+  </div>
+</div>
+
+<script>
+  document.getElementById('location-btn').addEventListener('click', function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        window.location.href = `<%= doctors_path %>?latitude=${latitude}&longitude=${longitude}`;
+      }, function(error) {
+        alert('Unable to retrieve your location. Please enable location services.');
+      });
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  });
+  
+  <% if @doctors.any? && @doctors.first.latitude.present? %>
+    document.addEventListener('DOMContentLoaded', function() {
+      const map = L.map('map').setView([<%= @doctors.first.latitude %>, <%= @doctors.first.longitude %>], 12);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      <% @doctors.each do |doctor| %>
+        <% if doctor.latitude.present? && doctor.longitude.present? %>
+          L.marker([<%= doctor.latitude %>, <%= doctor.longitude %>]).addTo(map)
+            .bindPopup('<b><%= doctor.user.full_name %></b><br><%= doctor.specialty %>');
+        <% end %>
+      <% end %>
+    });
+  <% end %>
+</script>

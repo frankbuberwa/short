@@ -1,7 +1,25 @@
 Rails.application.routes.draw do
+  get "home/index"
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
+
+  root 'home#index'
+  
+  get 'dashboard', to: 'dashboard#show'
+  
+  resources :doctors, only: [:index, :show]
+  resources :hospitals, only: [:index, :show, :new, :create]
+  
+  resources :appointments, except: [:new]
+  get 'appointments/new/:doctor_id', to: 'appointments#new', as: 'new_appointment'
+  
+  resources :availabilities
+  
+  namespace :admin do
+    resources :users
+    resources :roles
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

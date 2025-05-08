@@ -1,0 +1,43 @@
+<div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold text-blue-800 mb-6">Appointment Details</h1>
+  
+  <div class="space-y-4">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-700">Doctor</h2>
+      <p class="text-gray-900"><%= @appointment.doctor.user.full_name %></p>
+      <p class="text-gray-600"><%= @appointment.doctor.specialty %></p>
+    </div>
+    
+    <div>
+      <h2 class="text-lg font-semibold text-gray-700">Hospital</h2>
+      <p class="text-gray-900"><%= @appointment.hospital.name %></p>
+      <p class="text-gray-600"><%= @appointment.hospital.address %></p>
+    </div>
+    
+    <div>
+      <h2 class="text-lg font-semibold text-gray-700">Appointment Time</h2>
+      <p class="text-gray-900"><%= @appointment.appointment_date.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
+    
+    <div>
+      <h2 class="text-lg font-semibold text-gray-700">Status</h2>
+      <p class="<%= @appointment.status == 'confirmed' ? 'text-green-600' : 'text-yellow-600' %> font-medium">
+        <%= @appointment.status.capitalize %>
+      </p>
+    </div>
+    
+    <% if @appointment.notes.present? %>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-700">Notes</h2>
+        <p class="text-gray-900"><%= @appointment.notes %></p>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="mt-8 flex justify-end space-x-4">
+    <%= link_to "Back to Appointments", appointments_path, class: "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-300" %>
+    <% if current_user.patient? || current_user.admin? %>
+      <%= link_to "Edit", edit_appointment_path(@appointment), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300" %>
+    <% end %>
+  </div>
+</div>
