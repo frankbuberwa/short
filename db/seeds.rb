@@ -22,15 +22,15 @@ end
 
 # Create admin user
 admin_user = User.create!(
-  first_name: 'Admin',
-  last_name: 'User',
-  email: 'anita@hotmail.com',
-  password: 'password',
-  password_confirmation: 'password',
+  first_name: 'Godwin',
+  last_name: 'Mwisomba',
+  email: 'godwinmwisomba@gmail.com',
+  password: 'nyeu2025',
+  password_confirmation: 'nyeu2025',
   address: '123 Admin St',
   city: 'Adminville',
-  state: 'CA',
-  country: 'USA',
+  state: 'Liverpool',
+  country: 'UK',
   postal_code: '90210'
 )
 
@@ -41,13 +41,13 @@ admin_user.roles << Role.find_by(name: 'admin')
   patient = User.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    email: "patient#{i}@hotmail.com",
-    password: 'password',
-    password_confirmation: 'password',
+    email: "mgina#{i}@hotmail.com",
+    password: 'mgina2025',
+    password_confirmation: 'mgina2025',
     address: Faker::Address.street_address,
     city: Faker::Address.city,
     state: Faker::Address.state_abbr,
-    country: 'USA',
+    country: 'UK',
     postal_code: Faker::Address.zip_code,
     latitude: Faker::Address.latitude,
     longitude: Faker::Address.longitude
@@ -66,13 +66,13 @@ specialties = [
   doctor_user = User.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    email: "doctor#{i}@hotmail.com",
-    password: 'password',
-    password_confirmation: 'password',
+    email: "maria#{i}@hotmail.com",
+    password: 'nywele2025',
+    password_confirmation: 'nywele2025',
     address: Faker::Address.street_address,
     city: Faker::Address.city,
     state: Faker::Address.state_abbr,
-    country: 'USA',
+    country: 'UK',
     postal_code: Faker::Address.zip_code,
     latitude: Faker::Address.latitude,
     longitude: Faker::Address.longitude
@@ -93,13 +93,13 @@ end
   hospital_admin = User.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    email: "hospital_admin#{i}@yahoo.com",
-    password: 'password',
-    password_confirmation: 'password',
+    email: "mariki#{i}@yahoo.com",
+    password: 'mpingo2025',
+    password_confirmation: 'mpingo2025',
     address: Faker::Address.street_address,
     city: Faker::Address.city,
     state: Faker::Address.state_abbr,
-    country: 'USA',
+    country: 'UK',
     postal_code: Faker::Address.zip_code
   )
   

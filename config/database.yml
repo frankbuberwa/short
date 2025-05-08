@@ -81,6 +81,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
     database: waitless_app_production
     username: waitless_app
     password: <%= ENV["WAITLESS_APP_DATABASE_PASSWORD"] %>
@@ -96,3 +97,4 @@ production:
     <<: *primary_production
     database: waitless_app_production_cable
     migrations_paths: db/cable_migrate
+
