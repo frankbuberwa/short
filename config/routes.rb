@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   
   get 'dashboard', to: 'dashboard#show'
   
-  resources :doctors, only: [:index, :show]
+  resources :doctors do
+    collection do
+      get 'manage'
+    end
+  end
   resources :hospitals, only: [:index, :show, :new, :create]
   
   resources :appointments, except: [:new]
