@@ -8,11 +8,14 @@
 # You can control the number of workers using ENV["WEB_CONCURRENCY"]. You
 # should only set this value when you want to run 2 or more workers. The
 # default is already 1.
+
+workers Integer(ENV["WEB_CONCURRENCY"] || 4)
 #
 # The ideal number of threads per worker depends both on how much time the
 # application spends waiting for IO operations and on how much you wish to
 # prioritize throughput over latency.
 #
+preload_app!
 # As a rule of thumb, increasing the number of threads will increase how much
 # traffic a given process can handle (throughput), but due to CRuby's
 # Global VM Lock (GVL) it has diminishing returns and will degrade the
